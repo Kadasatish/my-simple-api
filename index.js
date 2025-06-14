@@ -15,12 +15,22 @@ const authenticate = (req, res, next) => {
   if (username === users.username && password === users.password) {
     next(); // Allow access
   } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
 };
 
-// Protected API route
-app.post('/api/protected', authenticate, post(req, res) => {
+// Root route for browser access
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to my API! Use /api/public for public data or /api/protected for authenticated data.' });
+});
+
+// Public route (no authentication needed)
+app.get('/api/public', (req, res) => {
+  res.json({ message: 'This is public data, no authentication needed!' });
+});
+
+// Protected API route (requires authentication)
+app.post('/api/protected', authenticate, (req, res) => {
   res.json({ message: 'This is a protected data!' });
 });
 
